@@ -7,6 +7,38 @@ public class GameManager : MonoBehaviour
     public GameObject lightgroup;
     [Header("會動的椅子")]
     public Transform chest;
+    [Header("喇叭")]
+    public AudioSource aud;
+    [Header("木板上滑動音效")]
+    public AudioClip soundWoodMove;
+    [Header("鐵製品移動音效")]
+    public AudioClip soundMetalMove;
+    [Header("敲門音效")]
+    public AudioClip soundKnock;
+    [Header("開門音效")]
+    public AudioClip soundOpen;
+    [Header("門的動畫控制器")]
+    public Animator aniDoor;
+
+    private int countDoor;
+
+    private int countChest;
+
+
+    public void LookDoor()
+    {
+        countDoor++;
+
+        if (countDoor==1)
+        {
+            aud.PlayOneShot(soundKnock, 5);
+        }
+        else if (countDoor==2)
+        {
+            aud.PlayOneShot(soundOpen, 4.5f);
+            aniDoor.SetTrigger("開門觸發器");
+        }
+    }
     public  IEnumerator Effectlight()
     {
         lightgroup.SetActive(false);
@@ -27,14 +59,15 @@ public class GameManager : MonoBehaviour
     }
     public IEnumerator MoveChest()
     {
+        chest.GetComponent<CapsuleCollider>().enabled = false;
         for (int i = 0; i < 30; i++)
         {
             chest.position -= chest.forward * 0.1f;
             yield return new WaitForSeconds(0.01f);
         }
-        chest.GetComponent<CapsuleCollider>().enabled = false;
+       
 
-
+        aud.PlayOneShot(soundWoodMove, 2.5f);
 
     }
     private void Start()
